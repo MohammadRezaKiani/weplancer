@@ -1,0 +1,10 @@
+RewriteEngine on
+<IfModule LiteSpeed>
+   CacheLookup on
+</IfModule>
+RewriteBase /
+RewriteRule .* - [E=Cache-Vary:laravel_shop_session]
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+RewriteCond %{REQUEST_URI} !^public
+RewriteRule ^(.*)$ public/$1 [L]
