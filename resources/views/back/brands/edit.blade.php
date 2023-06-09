@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="content-body">
                 <!-- Description -->
@@ -31,7 +31,7 @@
                     <div class="card-header">
                         <h4 class="card-title">ویرایش برند </h4>
                     </div>
-                    
+
                     <div id="main-card" class="card-content">
                         <div class="card-body">
                             <div class="col-12 col-md-10 offset-md-1">
@@ -62,15 +62,32 @@
                                                 </fieldset>
                                             </div>
 
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>دسته بندی برند</label>
+                                                    <select
+                                                        class="form-control"
+                                                        name="category_id" data-select2-id="1" tabindex="-1"
+                                                        aria-hidden="true">
+                                                        <option value="" data-select2-id="3">انتخاب کنید</option>
+                                                        @foreach($categories as $category)
+                                                            <option class="l1" data-pup="" value="{{$category->id}}" @if(in_array($category->id, $brand->categories->pluck('id')->toArray())) selected @endif>
+                                                                {{$category->name}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="first-name-vertical">توضیحات</label>
                                                     <textarea id="description" class="form-control" rows="3" name="description">{{ $brand->description }}</textarea>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-12 text-right">
                                                 <button type="submit" class="btn btn-primary mb-1 waves-effect waves-light">ویرایش برند</button>
@@ -83,7 +100,7 @@
                     </div>
                 </section>
                 <!--/ Description -->
-                
+
             </div>
         </div>
     </div>

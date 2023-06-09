@@ -73,10 +73,10 @@
         <header class="main-header dt-sl">
 
             <!-- Start topbar -->
-            <div class="container main-container">
+            <div class="container-fluid main-container">
                 <div class="topbar dt-sl">
                     <div class="row align-items-center">
-                        <div class="col-lg-2 col-md-3 col-4">
+                        <div class="col-lg-3 col-md-3 col-4">
                             <div class="logo-area float-right">
                                 <a href="{{ route('front.index') }}">
                                     <img data-src="{{ option('info_logo', theme_asset('img/logo.png')) }}" alt="{{ option('info_site_title', 'لاراول شاپ') }}">
@@ -97,7 +97,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="col-md-4 col-8 topbar-left">
+                        <div class="col-md-3 col-8 topbar-left">
                             @include('front::partials.user-menu')
                         </div>
                     </div>
@@ -107,7 +107,7 @@
 
             <!-- Start bottom-header -->
             <div class="bottom-header dt-sl mb-sm-bottom-header">
-                <div class="container main-container">
+                <div class="container-fluid main-container">
                     <!-- Start Main-Menu -->
                     @include('front::partials.menu.menu')
                     <!-- End Main-Menu -->

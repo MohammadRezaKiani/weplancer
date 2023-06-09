@@ -132,6 +132,8 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin/' . admin_route_prefix(), 'mi
 
     // ------------------ brands
     Route::resource('brands', BrandController::class)->except('show');
+    Route::get('brands/category' , [BrandController::class , 'category'])->name('brands.category');
+    Route::post('brands/category' , [BrandController::class , 'saveCategory'])->name('brands.category.save');
     Route::get('brands/ajax/get', [BrandController::class, 'ajax_get']);
 
     // ------------------ filters

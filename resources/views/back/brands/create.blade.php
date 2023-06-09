@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="content-body">
                 <!-- Description -->
@@ -31,11 +31,12 @@
                     <div class="card-header">
                         <h4 class="card-title">ایجاد برند جدید</h4>
                     </div>
-                    
+
                     <div id="main-card" class="card-content">
                         <div class="card-body">
                             <div class="col-12 col-md-10 offset-md-1">
-                                <form class="form" id="brand-create-form" action="{{ route('admin.brands.store') }}" method="brand">
+                                <form class="form" id="brand-create-form" action="{{ route('admin.brands.store') }}"
+                                      method="brand">
                                     @csrf
                                     <div class="form-body">
                                         <div class="row">
@@ -55,24 +56,45 @@
                                                 <fieldset class="form-group">
                                                     <label>تصویر</label>
                                                     <div class="custom-file">
-                                                        <input id="image" type="file" accept="image/*" name="image" class="custom-file-input">
+                                                        <input id="image" type="file" accept="image/*" name="image"
+                                                               class="custom-file-input">
                                                         <label class="custom-file-label" for="image"></label>
                                                     </div>
                                                 </fieldset>
                                             </div>
 
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>دسته بندی برند</label>
+                                                    <select
+                                                        class="form-control"
+                                                        name="category_id" data-select2-id="1" tabindex="-1"
+                                                        aria-hidden="true">
+                                                        <option value="" data-select2-id="3">انتخاب کنید</option>
+                                                        @foreach($categories as $category)
+                                                        <option class="l1 " data-pup="" value="{{$category->id}}">
+                                                            {{$category->name}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="first-name-vertical">توضیحات</label>
-                                                    <textarea id="description" class="form-control" rows="3" name="description"></textarea>
+                                                    <textarea id="description" class="form-control" rows="3"
+                                                              name="description"></textarea>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-12 text-right">
-                                                <button type="submit" class="btn btn-primary mb-1 waves-effect waves-light">ایجاد برند</button>
+                                                <button type="submit"
+                                                        class="btn btn-primary mb-1 waves-effect waves-light">ایجاد برند
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -82,7 +104,7 @@
                     </div>
                 </section>
                 <!--/ Description -->
-                
+
             </div>
         </div>
     </div>

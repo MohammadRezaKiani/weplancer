@@ -30,6 +30,7 @@
         <a class="product-thumb" href="{{ route('front.products.show', ['product' => $product]) }}">
             <img data-src="{{ $product->image ? asset($product->image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
         </a>
+{{--        @dd($product)--}}
         <div class="product-card-body">
 
             <h5 class="product-title">

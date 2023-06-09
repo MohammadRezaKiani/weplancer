@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -65,11 +66,11 @@ class ProductController extends Controller
         $this->authorize('products.prices');
 
         $request->validate([
-            'products'        => 'required|array',
+            'products' => 'required|array',
         ]);
 
-        $products_id    = array_keys($request->products);
-        $prices_count   = Price::whereIn('product_id', $products_id)->count() * 2;
+        $products_id = array_keys($request->products);
+        $prices_count = Price::whereIn('product_id', $products_id)->count() * 2;
         $max_input_vars = ini_get('max_input_vars');
 
         if ($prices_count + 5 > $max_input_vars) {
@@ -95,10 +96,10 @@ class ProductController extends Controller
                 if (isset($request_price['price']) && isset($request_price['stock']) && ($request_price['price'] != $price->price || $request_price['stock'] != $price->stock)) {
 
                     $price->update([
-                        'price'          => $request_price['price'],
-                        'stock'          => $request_price['stock'],
+                        'price' => $request_price['price'],
+                        'stock' => $request_price['stock'],
                         'discount_price' => get_discount_price($request_price['price'], $price->discount, $product),
-                        'regular_price'  => get_discount_price($request_price['price'], 0, $product),
+                        'regular_price' => get_discount_price($request_price['price'], 0, $product),
                     ]);
                 }
             }
@@ -134,12 +135,12 @@ class ProductController extends Controller
             'rounding_type',
         ]);
 
-        $data['spec_type_id']     = spec_type($request);
-        $data['price_type']       = "multiple-price";
-        $data['slug']             = $request->slug ?: $request->title;
-        $data['publish_date']     = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
+        $data['spec_type_id'] = spec_type($request);
+        $data['price_type'] = "multiple-price";
+        $data['slug'] = $request->slug ?: $request->title;
+        $data['publish_date'] = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
         $data['special_end_date'] = $request->special_end_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->special_end_date)->toCarbon() : null;
-        $data['lang']             = app()->getLocale();
+        $data['lang'] = app()->getLocale();
 
         $product = Product::create($data);
 
@@ -174,11 +175,11 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
-        $categories      = Category::detectLang()->where('type', 'productcat')->orderBy('ordering')->get();
-        $specTypes       = SpecType::detectLang()->get();
-        $sizetypes       = SizeType::detectLang()->get();
+        $categories = Category::detectLang()->where('type', 'productcat')->orderBy('ordering')->get();
+        $specTypes = SpecType::detectLang()->get();
+        $sizetypes = SizeType::detectLang()->get();
         $attributeGroups = AttributeGroup::detectLang()->orderBy('ordering')->get();
-        $currencies      = Currency::latest()->get();
+        $currencies = Currency::latest()->get();
 
         $copy_product = $request->product ? Product::where('slug', $request->product)->first() : null;
 
@@ -194,11 +195,11 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories      = Category::detectLang()->where('type', 'productcat')->orderBy('ordering')->get();
-        $specTypes       = SpecType::detectLang()->get();
-        $sizetypes       = SizeType::detectLang()->get();
+        $categories = Category::detectLang()->where('type', 'productcat')->orderBy('ordering')->get();
+        $specTypes = SpecType::detectLang()->get();
+        $sizetypes = SizeType::detectLang()->get();
         $attributeGroups = AttributeGroup::detectLang()->orderBy('ordering')->get();
-        $currencies      = Currency::whereNull('deleted_at')->orWhere('id', $product->currency_id)->latest()->get();
+        $currencies = Currency::whereNull('deleted_at')->orWhere('id', $product->currency_id)->latest()->get();
 
         return view('back.products.edit', compact(
             'product',
@@ -232,10 +233,10 @@ class ProductController extends Controller
             'rounding_type',
         ]);
 
-        $data['spec_type_id']     = spec_type($request);
-        $data['price_type']       = "multiple-price";
-        $data['slug']             = $request->slug ?: $request->title;
-        $data['publish_date']     = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
+        $data['spec_type_id'] = spec_type($request);
+        $data['price_type'] = "multiple-price";
+        $data['slug'] = $request->slug ?: $request->title;
+        $data['publish_date'] = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
         $data['special_end_date'] = $request->special_end_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->special_end_date)->toCarbon() : null;
 
         $product->update($data);
@@ -323,7 +324,7 @@ class ProductController extends Controller
         $this->authorize('products.delete');
 
         $request->validate([
-            'ids'   => 'required|array',
+            'ids' => 'required|array',
             'ids.*' => 'exists:products,id',
         ]);
 
@@ -353,13 +354,15 @@ class ProductController extends Controller
         $products = Product::detectLang()->datatableFilter($request)->get();
 
         switch ($request->export_type) {
-            case 'excel': {
-                    return $this->exportExcel($products, $request);
-                    break;
-                }
-            default: {
-                    return $this->exportPrint($products, $request);
-                }
+            case 'excel':
+            {
+                return $this->exportExcel($products, $request);
+                break;
+            }
+            default:
+            {
+                return $this->exportPrint($products, $request);
+            }
         }
     }
 
@@ -406,15 +409,15 @@ class ProductController extends Controller
             if ($update_price) {
 
                 $update_price->update([
-                    "price"              => $price["price"],
-                    "discount"           => $price["discount"],
-                    "discount_price"     => get_discount_price($price["price"], $price["discount"], $product),
-                    "regular_price"      => get_discount_price($price["price"], 0, $product),
-                    "stock"              => $price["stock"],
-                    "cart_max"           => $price["cart_max"],
-                    "cart_min"           => $price["cart_min"],
+                    "price" => $price["price"],
+                    "discount" => $price["discount"],
+                    "discount_price" => get_discount_price($price["price"], $price["discount"], $product),
+                    "regular_price" => get_discount_price($price["price"], 0, $product),
+                    "stock" => $price["stock"],
+                    "cart_max" => $price["cart_max"],
+                    "cart_min" => $price["cart_min"],
                     "discount_expire_at" => $price["discount_expire_at"] ? Jalalian::fromFormat('Y-m-d H:i:s', $price["discount_expire_at"])->toCarbon() : null,
-                    "deleted_at"         => null,
+                    "deleted_at" => null,
                 ]);
 
                 $update_price->get_attributes()->sync($attributes);
@@ -424,13 +427,13 @@ class ProductController extends Controller
 
                 $insert_price = $product->prices()->create(
                     [
-                        "price"              => $price["price"],
-                        "discount"           => $price["discount"],
-                        "discount_price"     => get_discount_price($price["price"], $price["discount"], $product),
-                        "regular_price"      => get_discount_price($price["price"], 0, $product),
-                        "stock"              => $price["stock"],
-                        "cart_max"           => $price["cart_max"],
-                        "cart_min"           => $price["cart_min"],
+                        "price" => $price["price"],
+                        "discount" => $price["discount"],
+                        "discount_price" => get_discount_price($price["price"], $price["discount"], $product),
+                        "regular_price" => get_discount_price($price["price"], 0, $product),
+                        "stock" => $price["stock"],
+                        "cart_max" => $price["cart_max"],
+                        "cart_min" => $price["cart_min"],
                         "discount_expire_at" => $price["discount_expire_at"] ? Jalalian::fromFormat('Y-m-d H:i:s', $price["discount_expire_at"])->toCarbon() : null,
                     ]
                 );
@@ -474,12 +477,12 @@ class ProductController extends Controller
             if ($update_price) {
 
                 $update_price->update([
-                    "price"          => $price["price"],
-                    "discount"       => $price["discount"],
+                    "price" => $price["price"],
+                    "discount" => $price["discount"],
                     "discount_price" => get_discount_price($price["price"], $price["discount"], $product),
-                    "regular_price"  => get_discount_price($price["price"], 0, $product),
-                    "deleted_at"     => null,
-                    "ordering"       => $ordering++
+                    "regular_price" => get_discount_price($price["price"], 0, $product),
+                    "deleted_at" => null,
+                    "ordering" => $ordering++
                 ]);
 
                 $update_price->updateFile($price['title'], $price['file'] ?? null, $price['status']);
@@ -488,11 +491,11 @@ class ProductController extends Controller
             } else {
                 $insert_price = $product->prices()->create(
                     [
-                        "price"          => $price["price"],
-                        "discount"       => $price["discount"],
+                        "price" => $price["price"],
+                        "discount" => $price["discount"],
                         "discount_price" => get_discount_price($price["price"], $price["discount"], $product),
-                        "regular_price"  => get_discount_price($price["price"], $price["discount"], $product),
-                        "ordering"       => $ordering++
+                        "regular_price" => get_discount_price($price["price"], $price["discount"], $product),
+                        "ordering" => $ordering++
                     ]
                 );
 
@@ -542,10 +545,10 @@ class ProductController extends Controller
                     $product->specifications()->attach([
                         $spec->id => [
                             'specification_group_id' => $spec_group->id,
-                            'group_ordering'         => $group_ordering,
+                            'group_ordering' => $group_ordering,
                             'specification_ordering' => $specification_ordering++,
-                            'value'                  => $specification['value'],
-                            'special'                => isset($specification['special']) ? true : false
+                            'value' => $specification['value'],
+                            'special' => isset($specification['special']) ? true : false
                         ]
                     ]);
                 }
@@ -560,8 +563,8 @@ class ProductController extends Controller
         if ($request->brand) {
             $brand = Brand::firstOrCreate(
                 [
-                    'name'    => $request->brand,
-                    'lang'    => app()->getLocale(),
+                    'name' => $request->brand,
+                    'lang' => app()->getLocale(),
                 ],
                 [
                     'slug' => $request->brand,
@@ -581,16 +584,24 @@ class ProductController extends Controller
                 Storage::disk('public')->delete($product->image);
             }
 
-            $file = $request->image;
-            $name = uniqid() . '_' . $product->id . '.' . $file->getClientOriginalExtension();
-            $request->image->storeAs('products', $name);
+            $file = $request->file('image');
+            $name = uniqid() . '_' . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/products'), $name);
+            dd( '/uploads/products/' . $name);
+
+            // Convert image to WebP
+//            $webpPath = $this->convertToWebp($file, 'uploads/products', $name);
+//            return $webpPath;
+
+            dd($this->convertToWebp($file, 'uploads/products', $name));
 
             $product->image = '/uploads/products/' . $name;
+            $product->webp_image = '/uploads/products/' . pathinfo($name, PATHINFO_FILENAME) . '.webp';
             $product->save();
         }
 
         $product_images = $product->gallery()->pluck('image')->toArray();
-        $images         = explode(',', $request->images);
+        $images = explode(',', $request->images);
         $deleted_images = array_diff($product_images, $images);
 
         foreach ($deleted_images as $del_img) {
@@ -614,11 +625,14 @@ class ProductController extends Controller
             foreach ($images as $image) {
 
                 if (Storage::exists('tmp/' . $image)) {
+                    Storage::disk('plocal')->putFileAs('/uploads/products', storage_path('/app/public/uploads/tmp/' . $image), $image);
 
-                    Storage::move('tmp/' . $image, 'products/' . $image);
+                    // Convert image to WebP
+                    $webpPath = $this->convertToWebp(storage_path('app/public/uploads/tmp/' . $image), 'uploads/products', $image);
 
                     $product->gallery()->create([
-                        'image'    => '/uploads/products/' . $image,
+                        'image' => '/uploads/products/' . $image,
+                        'webp_image' => '/uploads/products/' . pathinfo($image, PATHINFO_FILENAME) . '.webp',
                         'ordering' => $ordering++,
                     ]);
                 } else {
@@ -628,6 +642,19 @@ class ProductController extends Controller
                 }
             }
         }
+    }
+
+    private function convertToWebp($file, $directory, $filename)
+    {
+
+        $image = Image::make($file);
+        return $image;
+        $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+        return $webpFilename;
+        $webpPath = $directory . '/' . $webpFilename;
+        $image->encode('webp', 80)->save(public_path($webpPath));
+
+        return $webpPath;
     }
 
     private function updateProductCategories(Product $product, Request $request)
@@ -648,8 +675,8 @@ class ProductController extends Controller
 
             foreach ($labels as $item) {
                 $label = Label::firstOrCreate([
-                    'title'    => $item,
-                    'lang'     => app()->getLocale(),
+                    'title' => $item,
+                    'lang' => app()->getLocale(),
                 ]);
 
                 $label_ids[] = $label->id;
@@ -665,7 +692,7 @@ class ProductController extends Controller
 
         if (!$request->sizes) return;
 
-        $ordering      = 1;
+        $ordering = 1;
         $groupOrdering = 1;
 
         foreach ($request->sizes as $group => $sizes) {
@@ -674,8 +701,8 @@ class ProductController extends Controller
                 $product->sizes()->attach(
                     [
                         $size_id => [
-                            'group'    => $groupOrdering,
-                            'value'    => $value,
+                            'group' => $groupOrdering,
+                            'value' => $value,
                             'ordering' => $ordering++
                         ]
                     ]

@@ -12,7 +12,7 @@
 
     <!-- Start main-content -->
     <main class="main-content dt-sl mt-4 mb-3">
-        <div class="container main-container">
+        <div class="container-fluid main-container">
             <!-- Start title - breadcrumb -->
             <div class="title-breadcrumb-special dt-sl mb-3">
                 <div class="breadcrumb dt-sl">
@@ -33,7 +33,6 @@
                 </div>
             </div>
             <!-- End title - breadcrumb -->
-
             <!-- Start Product -->
             <div class="dt-sn mb-3 dt-sl">
                 <div class="row">

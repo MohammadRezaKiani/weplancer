@@ -2,7 +2,7 @@
 
 @push('meta')
     <meta name="description" content="{{ option('info_short_description') }}">
-    <meta name="keywords" content="{{ option('info_tags') }}">    
+    <meta name="keywords" content="{{ option('info_tags') }}">
     <link rel="canonical" href="{{ route('front.products.index') }}" />
 @endpush
 

@@ -50,6 +50,7 @@ class Product extends Model
         return $this->morphMany(Gallery::class, 'galleryable');
     }
 
+
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
@@ -111,6 +112,15 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function brandCategory()
+    {
+        if (!is_null($this->brand_id)) {
+            $brand = Brand::find($this->brand_id);
+            return $brand->categories;
+        }
+        return null;
     }
 
     public function priceChanges()
@@ -285,7 +295,7 @@ class Product extends Model
         $prices = $this->prices()->pluck('id');
 
         $group_attributes = $attributeGroup->get_attributes()->pluck('id');
-        $attributes       = DB::table('attribute_price')->whereIn('price_id', $prices)->whereIn('attribute_id', $group_attributes);
+        $attributes = DB::table('attribute_price')->whereIn('price_id', $prices)->whereIn('attribute_id', $group_attributes);
 
         if ($groups) {
             $group_prices = $this->prices();
@@ -323,7 +333,7 @@ class Product extends Model
     public function hasAttributeStock(Attribute $attribute, $attributes_id = null)
     {
 
-        $query =  $this->getPrices()
+        $query = $this->getPrices()
             ->whereHas('get_attributes', function ($q) use ($attribute) {
                 $q->where('attribute_id', $attribute->id);
             })->inStock();
@@ -411,7 +421,7 @@ class Product extends Model
         $rating = $this->reviews()->accepted()->sum('rating') / ($this->reviews()->accepted()->count() ?: 1);
 
         $this->update([
-            'rating'        => $rating,
+            'rating' => $rating,
             'reviews_count' => $this->reviews()->accepted()->count()
         ]);
     }

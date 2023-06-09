@@ -60,6 +60,7 @@ Route::group(['as' => 'front.'], function () {
 
     // ------------------ brands
     Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
+    Route::get('category-brand/{slug}', [BrandController::class, 'showCategory'])->name('brands.category.show');
 
     // ------------------ sitemap
     Route::get('sitemap', [SitemapController::class, 'index']);
