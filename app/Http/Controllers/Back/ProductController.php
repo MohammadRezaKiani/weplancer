@@ -586,20 +586,13 @@ class ProductController extends Controller
 
             $file = $request->file('image');
             $name = uniqid() . '_' . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/products'), $name);
-            dd( '/uploads/products/' . $name);
-
-            // Convert image to WebP
-//            $webpPath = $this->convertToWebp($file, 'uploads/products', $name);
-//            return $webpPath;
-
-            dd($this->convertToWebp($file, 'uploads/products', $name));
-
+            $webpPath = $this->convertToWebp($request->image, 'uploads/products', $name);
             $product->image = '/uploads/products/' . $name;
-            $product->webp_image = '/uploads/products/' . pathinfo($name, PATHINFO_FILENAME) . '.webp';
+            dd($product->webp_image = '/uploads/products/' . pathinfo($name, PATHINFO_FILENAME) . '.webp');
             $product->save();
         }
 
+        dd('Nashod');
         $product_images = $product->gallery()->pluck('image')->toArray();
         $images = explode(',', $request->images);
         $deleted_images = array_diff($product_images, $images);
@@ -630,6 +623,7 @@ class ProductController extends Controller
                     // Convert image to WebP
                     $webpPath = $this->convertToWebp(storage_path('app/public/uploads/tmp/' . $image), 'uploads/products', $image);
 
+                    dd($webpPath);
                     $product->gallery()->create([
                         'image' => '/uploads/products/' . $image,
                         'webp_image' => '/uploads/products/' . pathinfo($image, PATHINFO_FILENAME) . '.webp',
@@ -648,9 +642,7 @@ class ProductController extends Controller
     {
 
         $image = Image::make($file);
-        return $image;
         $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
-        return $webpFilename;
         $webpPath = $directory . '/' . $webpFilename;
         $image->encode('webp', 80)->save(public_path($webpPath));
 
