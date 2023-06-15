@@ -49,6 +49,7 @@ Route::group(['as' => 'front.'], function () {
     // ------------------ cart
     Route::get('cart', [CartController::class, 'show'])->name('cart');
     Route::post('cart/{product}', [CartController::class, 'store'])->name('cart.store');
+    Route::get('cart/transfer/{product}/{cart}', [CartController::class, 'transferToNextBuy'])->name('next.buy');
     Route::put('cart', [CartController::class, 'update']);
     Route::delete('cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 

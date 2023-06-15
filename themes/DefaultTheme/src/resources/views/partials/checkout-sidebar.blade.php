@@ -25,7 +25,7 @@
             </div>
         </div>
     @else
-        <div class="col-sm-12 col-12 px-0 mb-4" style='margin-top: 12%'>
+        <div class="col-sm-12 col-12 px-0 mb-4">
             <div class="dt-sn pt-3 pb-3 px-res-1">
                 <div class="section-title text-sm-title title-wide no-after-title-wide mb-0">
                     <h2>{{ trans('front::messages.cart.discount-code') }}</h2>

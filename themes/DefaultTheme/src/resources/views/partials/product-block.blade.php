@@ -28,7 +28,11 @@
 
         </div>
         <a class="product-thumb" href="{{ route('front.products.show', ['product' => $product]) }}">
-            <img data-src="{{ $product->image ? asset($product->image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
+            @if(option('show_image_optimize'))
+                <img data-src="{{ $product->webp_image ? asset($product->webp_image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
+            @else
+                <img data-src="{{ $product->image ? asset($product->image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
+            @endif
         </a>
 {{--        @dd($product)--}}
         <div class="product-card-body">

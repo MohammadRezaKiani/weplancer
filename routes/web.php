@@ -297,6 +297,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin/' . admin_route_prefix(), 'mi
 
     Route::get('settings/others', [SettingController::class, 'showOthers'])->name('settings.others');
     Route::post('settings/others', [SettingController::class, 'updateOthers']);
+    Route::post('settings/imageOptimizer', [SettingController::class, 'imageOptimizer'])->name('settings.image.optimizer');
 
     Route::get('settings/sms', [SettingController::class, 'showSms'])->name('settings.sms');
     Route::post('settings/sms', [SettingController::class, 'updateSms']);

@@ -11,7 +11,17 @@ class Cart extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot(['quantity', 'price_id', 'id'])->withTimestamps();
+        return $this->belongsToMany(Product::class)->withPivot(['quantity', 'price_id', 'id' , 'is_next_buy'])->where('is_next_buy' , 0)->withTimestamps();
+    }
+
+    public function allProducs()
+    {
+        return $this->belongsToMany(Product::class)->withPivot(['quantity', 'price_id', 'id' , 'is_next_buy'])->withTimestamps();
+    }
+
+    public function nextBuyList()
+    {
+        return $this->belongsToMany(Product::class)->withPivot(['quantity', 'price_id', 'id' ,'is_next_buy'])->where('is_next_buy' , 1)->withTimestamps();
     }
 
     public function prices()

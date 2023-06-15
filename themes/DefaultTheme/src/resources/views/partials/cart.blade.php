@@ -1,7 +1,6 @@
 @php
     $cart = isset($render_cart) ? $render_cart : $cart;
 @endphp
-
 @if($cart && $cart->products()->count())
     <li class="nav-item" id="cart-list-item">
         <a class="nav-link" href="#" data-toggle="dropdown" aria-haspopup="true"

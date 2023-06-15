@@ -182,12 +182,38 @@
                                         </div>
 
 
-
                                         <div class="row">
                                             <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-1">
                                                 <button type="submit" class="btn btn-primary glow">ذخیره تغییرات</button>
                                             </div>
                                         </div>
+                                    </form>
+
+                                    <br>
+                                    <hr>
+                                    <form action="{{ route('admin.settings.image.optimizer') }}" method="POST" id="image-optimize-form">
+
+                                        <div class='row'>
+                                            <div class="col-md-6">
+                                                <label>مقدار درصد فشرده سازی عکس (اعمال بر روی عکس های جدید)</label>
+                                                <div class="input-group mb-75">
+                                                    <input type="number" name="image_optimization_percentage" class="form-control" min="0" max='100' value="{{ option('image_optimization_percentage', 80) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>نمایش عکس های فشرده شده بجای عکس های اصلی:</label>
+                                                <select name="show_image_optimize" class="form-control">
+                                                    <option value="0" {{ option('show_image_optimize') == 0 ? 'selected' : '' }}>غیرفعال</option>
+                                                    <option value="1" {{ option('show_image_optimize') == 1 ? 'selected' : '' }}>فعال</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-1">
+                                                <button type="submit" class="btn btn-success glow">ذخیره فشرده سازی</button>
+                                            </div>
+                                        </div>
+
                                     </form>
                                 </div>
                             </div>

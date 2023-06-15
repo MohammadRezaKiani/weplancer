@@ -580,19 +580,26 @@ class ProductController extends Controller
     private function updateProductImages(Product $product, Request $request)
     {
         if ($request->hasFile('image')) {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
-
             $file = $request->file('image');
-            $name = uniqid() . '_' . '.' . $file->getClientOriginalExtension();
-            $webpPath = $this->convertToWebp($request->image, 'uploads/products', $name);
-            $product->image = '/uploads/products/' . $name;
-            dd($product->webp_image = '/uploads/products/' . pathinfo($name, PATHINFO_FILENAME) . '.webp');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put($filename, file_get_contents($file));
+
+            // Convert the image to WebP format
+            $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+            $webpPath = 'uploads/products/' . $webpFilename;
+            $webpFilePath = public_path($webpPath);
+
+            $image = Image::make($file);
+            $image->encode('webp', option('image_optimization_percentage'))->save($webpFilePath);
+
+            // Update the product with the image paths
+            $product->image = $filename;
+            $product->webp_image = $webpPath;
             $product->save();
         }
 
-        dd('Nashod');
         $product_images = $product->gallery()->pluck('image')->toArray();
         $images = explode(',', $request->images);
         $deleted_images = array_diff($product_images, $images);
@@ -623,7 +630,6 @@ class ProductController extends Controller
                     // Convert image to WebP
                     $webpPath = $this->convertToWebp(storage_path('app/public/uploads/tmp/' . $image), 'uploads/products', $image);
 
-                    dd($webpPath);
                     $product->gallery()->create([
                         'image' => '/uploads/products/' . $image,
                         'webp_image' => '/uploads/products/' . pathinfo($image, PATHINFO_FILENAME) . '.webp',
@@ -644,7 +650,7 @@ class ProductController extends Controller
         $image = Image::make($file);
         $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
         $webpPath = $directory . '/' . $webpFilename;
-        $image->encode('webp', 80)->save(public_path($webpPath));
+        $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));
 
         return $webpPath;
     }

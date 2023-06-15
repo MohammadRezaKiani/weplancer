@@ -36,10 +36,10 @@ class SettingController extends Controller
         $informations = $request->except(['info_icon', 'info_logo']);
 
         $this->validate($request, [
-            'info_site_title'  => 'required',
-            'info_icon'        => 'image|max:2048',
-            'info_logo'        => 'image|max:2048',
-            'info_city_id'     => 'exists:cities,id',
+            'info_site_title' => 'required',
+            'info_icon' => 'image|max:2048',
+            'info_logo' => 'image|max:2048',
+            'info_city_id' => 'exists:cities,id',
             'info_province_id' => 'exists:provinces,id',
         ]);
 
@@ -84,7 +84,7 @@ class SettingController extends Controller
         }
 
         return response()->json([
-            'admin_route_prefix'         => $admin_route_prefix,
+            'admin_route_prefix' => $admin_route_prefix,
             'admin_route_prefix_changed' => $admin_route_prefix_changed
         ]);
     }
@@ -146,9 +146,9 @@ class SettingController extends Controller
                 $gateway = Gateway::find($id);
 
                 $gateway->update([
-                    'name'        => $request_gateway['name'],
-                    'ordering'    => $request_gateway['ordering'],
-                    'is_active'   => true,
+                    'name' => $request_gateway['name'],
+                    'ordering' => $request_gateway['ordering'],
+                    'is_active' => true,
                 ]);
 
                 foreach ($request_gateway['configs'] as $key => $value) {
@@ -216,9 +216,9 @@ class SettingController extends Controller
                     Storage::disk('public')->delete(option($key));
                 }
 
-                $file          = $request->file($key);
-                $name          = uniqid() . '.' . $file->getClientOriginalExtension();
-                $filename      = '/uploads/' . $file->storeAs('others', $name);
+                $file = $request->file($key);
+                $name = uniqid() . '.' . $file->getClientOriginalExtension();
+                $filename = '/uploads/' . $file->storeAs('others', $name);
 
                 option_update($key, $filename);
             }
@@ -231,6 +231,23 @@ class SettingController extends Controller
         }
 
         return response('success');
+    }
+
+    public function imageOptimizer(Request $request)
+    {
+        $this->authorize('settings.information');
+
+        $this->validate($request, [
+            'image_optimization_percentage' => 'required',
+            'show_image_optimize' => 'required',
+        ]);
+
+        option_update('image_optimization_percentage', $request->image_optimization_percentage);
+        option_update('show_image_optimize', $request->show_image_optimize);
+
+
+        return response('success');
+
     }
 
     public function showSms()

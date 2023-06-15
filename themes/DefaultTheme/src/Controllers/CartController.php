@@ -15,8 +15,41 @@ class CartController extends Controller
     public function show()
     {
         $city_id = auth()->check() && auth()->user()->address  ? auth()->user()->address->city_id : null;
-
         return view('front::cart', compact('city_id'));
+    }
+
+    public function transferToNextBuy(Product $product, Request $request)
+    {
+
+
+        // Get the current cart
+        $cart = Cart::where('id' , $request->cart)->first();
+
+        if(!$cart){
+            return abort(404);
+        }
+
+        // Find the product in the cart
+        $findProductInCart = $cart->allProducs()->where('product_id', $product->id)->first();
+
+        // Update the is_next_buy field for the selected product
+        if ($findProductInCart) {
+            if ($findProductInCart->pivot->is_next_buy){
+                $findProductInCart->pivot->is_next_buy = 0;
+                $findProductInCart->pivot->quantity = 1;
+                $findProductInCart->pivot->save();
+            }else{
+                $findProductInCart->pivot->is_next_buy = 1;
+                $findProductInCart->pivot->quantity = 1;
+                $findProductInCart->pivot->save();
+            }
+        }else{
+            return 'sdsd';
+        }
+        return redirect()->route('front.cart');
+
+        // Additional logic or redirect after updating the field
+
     }
 
     public function store(Product $product, Request $request)
@@ -31,7 +64,6 @@ class CartController extends Controller
             $request->validate([
                 'price_id' => ['required', Rule::exists('prices', 'id')->where('product_id', $product->id)->where('deleted_at', null)]
             ]);
-
             $price = $product->prices()->find($request->price_id);
         }
 
@@ -40,17 +72,16 @@ class CartController extends Controller
             $cart = auth()->user()->getCart();
         } else {
             $cart_id = Cookie::get('cart_id');
-
             if (!$cart_id || !($cart = Cart::find($cart_id)) || $cart->user_id != null) {
                 $cart = Cart::create([
                     'user_id' => null,
                 ]);
             }
-
             Cookie::queue(Cookie::make('cart_id', $cart->id));
         }
 
-        $cart_product = $cart->products()->where('product_id', $product->id)->where('price_id', $price->id)->first();
+        $cart_product = $cart->allProducs()->where('product_id', $product->id)->where('price_id', $price->id)->first();
+
 
         if (!$cart_product) {
 
@@ -60,7 +91,7 @@ class CartController extends Controller
                 return response(['status' => 'error', 'message' => $stock_status['message']]);
             }
 
-            $cart->products()->attach([
+            $cart->allProducs()->attach([
                 $product->id => [
                     'product_id' => $product->id,
                     'quantity'   => $request->quantity,
@@ -68,23 +99,24 @@ class CartController extends Controller
                 ],
             ]);
         } else {
-
             if ($product->isDownload()) {
                 return response([
                     'status' => 'error',
-                    'message' => trans('front::messages.controller.this-file-is-in-cart') 
+                    'message' => trans('front::messages.controller.this-file-is-in-cart')
                 ]);
             }
-
             $stock_status = $price->hasStock($request->quantity + $cart_product->pivot->quantity);
-
             if (!$stock_status['status']) {
                 return response(['status' => 'error', 'message' => $stock_status['message']]);
             }
-
-            $cart->products()->where('product_id', $product->id)->where('price_id', $price->id)->update([
+            $cart->allProducs()->where('product_id', $product->id)->where('price_id', $price->id)->update([
                 'quantity'   => $cart_product->pivot->quantity + $request->quantity,
             ]);
+            if ($cart_product->pivot && $cart_product->pivot->is_next_buy == 1) {
+                $cart_product->pivot->is_next_buy = 0;
+                $cart_product->pivot->save();
+            }
+
         }
 
         return response(['status' => 'success', 'cart' => view('front::partials.cart')->with('render_cart', $cart)->render()]);

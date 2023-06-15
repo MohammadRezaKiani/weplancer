@@ -27,7 +27,7 @@
             </div>
 
             <div id="main-card" class="content-body">
-                <form class="form" id="product-edit-form" action="{{ route('admin.products.update', ['product' => $product]) }}" data-redirect="{{ route('admin.products.index') }}" method="post">
+                <form class="form" id="product-edit-form" action="{{ route('admin.products.update', ['product' => $product]) }}" data-redirect="{{ route('admin.products.index') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('put')
 
