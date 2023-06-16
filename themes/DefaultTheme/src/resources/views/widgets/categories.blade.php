@@ -16,8 +16,12 @@
                     @foreach ($categories as $category)
                         <div class="item">
                             <a href="{{ $category->link }}" class="promotion-category">
-                                <img data-src="{{ $category->image ? asset($category->image) : asset('no-image-product.png') }}" alt="{{ $category->title }}">
-                                <h4 class="promotion-category-name">{{ $category->title }}</h4>
+                                @if(!config('show_image_optimize'))
+                                <img data-src="{{ $category->webp_image ? asset($category->webp_image) : asset('no-image-product.png') }}" alt="{{ $category->title }}">
+                                @else
+                                    <img data-src="{{ $category->image ? asset($category->image) : asset('no-image-product.png') }}" alt="{{ $category->title }}">
+                                @endif
+                                    <h4 class="promotion-category-name">{{ $category->title }}</h4>
                                 <h6 class="promotion-category-quantity">{{ $category->allPublishedProducts()->count() }}{{ trans('front::messages.header.kala') }}</h6>
                             </a>
                         </div>

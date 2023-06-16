@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class CategoryController extends Controller
 {
@@ -65,28 +66,59 @@ class CategoryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->image;
-            $name = uniqid() . '_' . $category->id . '.' . $file->getClientOriginalExtension();
-            $request->image->storeAs('categories', $name);
 
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                Storage::disk('plocal')->delete($category->image);
             }
 
-            $category->image = '/uploads/categories/' . $name;
+            $file = $request->file('image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put('/uploads/categories/' . $filename, file_get_contents($file));
+
+            // Convert the image to WebP format
+            $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+            $webpPath = 'uploads/categories/' . $webpFilename;
+            $webpFilePath = public_path($webpPath);
+
+            $image = Image::make($file);
+            $image->fit(100, 100, function ($constraint) {
+                // Additional parameters to force exact dimensions
+                $constraint->upsize(); // Prevent upsizing of the image
+                $constraint->aspectRatio(); // Ignore aspect ratio
+            });
+            $image->encode('webp', option('image_optimization_percentage'))->save($webpFilePath);
+
+            // Update the product with the image paths
+            $category->image = '/uploads/categories/' . $filename;
+            $category->webp_image = $webpPath;
             $category->save();
         }
 
         if ($request->hasFile('background_image')) {
-            $file = $request->background_image;
-            $name = uniqid() . '_' . $category->id . '.' . $file->getClientOriginalExtension();
-            $request->background_image->storeAs('categories', $name);
 
             if ($category->background_image) {
-                Storage::disk('public')->delete($category->background_image);
+                Storage::disk('plocal')->delete($category->background_image);
             }
 
+            $file = $request->background_image;
+            $name = uniqid() . '_' . $category->id . '.' . $file->getClientOriginalExtension();
+
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put($name, file_get_contents($file));
+
+            // Convert the image to WebP format
+            $webpFilename = pathinfo($name, PATHINFO_FILENAME) . '.webp';
+            $webpPath = 'uploads/categories/' . $webpFilename;
+            $webpFilePath = public_path($webpPath);
+
+            $image = Image::make($file);
+            $image->encode('webp', option('image_optimization_percentage'))->save($webpFilePath);
+
+            // Update the product with the image paths
             $category->background_image = '/uploads/categories/' . $name;
+            $category->webp_background_image = $webpPath;
             $category->save();
         }
 

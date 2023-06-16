@@ -577,6 +577,7 @@ class ProductController extends Controller
         }
     }
 
+
     private function updateProductImages(Product $product, Request $request)
     {
         if ($request->hasFile('image')) {
@@ -584,15 +585,9 @@ class ProductController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Save the image file to the 'plocal' disk
-            Storage::disk('plocal')->put($filename, file_get_contents($file));
+            Storage::disk('plocal')->put('uploads/products/'.$filename, file_get_contents($file));
 
-            // Convert the image to WebP format
-            $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
-            $webpPath = 'uploads/products/' . $webpFilename;
-            $webpFilePath = public_path($webpPath);
-
-            $image = Image::make($file);
-            $image->encode('webp', option('image_optimization_percentage'))->save($webpFilePath);
+            $webpPath = $this->convertToWebp($file, 'uploads/products', $filename , 300 , 300);
 
             // Update the product with the image paths
             $product->image = $filename;
@@ -621,35 +616,43 @@ class ProductController extends Controller
         $ordering = 1;
 
         if ($request->images) {
+            foreach ($images as $file) {
+                $filePath = storage_path('app/public/uploads/tmp/' . $file);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
 
-            foreach ($images as $image) {
+                if (file_exists($filePath)) {
+                    $filename = uniqid() . '.' . $extension;
 
-                if (Storage::exists('tmp/' . $image)) {
-                    Storage::disk('plocal')->putFileAs('/uploads/products', storage_path('/app/public/uploads/tmp/' . $image), $image);
+                    // Save the image file to the 'plocal' disk
+                    $movePath = Storage::disk('plocal')->put('uploads/products/'.$filename, file_get_contents($filePath));
 
-                    // Convert image to WebP
-                    $webpPath = $this->convertToWebp(storage_path('app/public/uploads/tmp/' . $image), 'uploads/products', $image);
-
+                    $webpPath = $this->convertToWebp($filePath, 'uploads/products', $filename, 600, 600);
+                    // Update the product with the image paths
                     $product->gallery()->create([
-                        'image' => '/uploads/products/' . $image,
-                        'webp_image' => '/uploads/products/' . pathinfo($image, PATHINFO_FILENAME) . '.webp',
+                        'image' => '/uploads/products/' . $filename,
+                        'webp_image' => $webpPath,
                         'ordering' => $ordering++,
                     ]);
                 } else {
-                    $product->gallery()->where('image', $image)->update([
-                        'ordering' => $ordering++,
-                    ]);
+//                   dd('Handle the case when the file doesnt exist');
                 }
             }
         }
+
     }
 
-    private function convertToWebp($file, $directory, $filename)
+    private function convertToWebp($file, $directory, $filename , $width , $height)
     {
 
         $image = Image::make($file);
         $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
         $webpPath = $directory . '/' . $webpFilename;
+        $image->fit($width, $height, function ($constraint) {
+            // Additional parameters to force exact dimensions
+            $constraint->upsize(); // Prevent upsizing of the image
+            $constraint->aspectRatio(); // Ignore aspect ratio
+        });
+
         $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));
 
         return $webpPath;

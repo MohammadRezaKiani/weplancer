@@ -538,11 +538,11 @@
                 type: 'image/jpeg',
                 status: 'success',
                 upload: {
-                    filename: '{{ $image->image }}',
+                    filename: '{{ asset($image->image) }}',
                 },
                 prevFile: true,
                 accepted: true,
-                image: '{{ $image->image }}',
+                image: '{{ asset($image->image) }}',
             });
         @endforeach
 
