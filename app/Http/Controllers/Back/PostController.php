@@ -10,6 +10,7 @@ use App\Models\Post;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Morilog\Jalali\Jalalian;
 
 class PostController extends Controller
@@ -47,10 +48,17 @@ class PostController extends Controller
         $data['lang']      = app()->getLocale();
 
         if ($request->hasFile('image')) {
-            $file          = $request->image;
-            $name          = uniqid() . '.' . $file->getClientOriginalExtension();
-            $image         = $request->image->storeAs('posts', $name);
-            $data['image'] = '/uploads/' . $image;
+            $file = $request->file('image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put('uploads/posts/'.$filename, file_get_contents($file));
+
+            $webpPath = $this->convertToWebp($file, 'uploads/posts', $filename , 300 , 300);
+
+            // Update the product with the image paths
+            $data['image'] = '/uploads/posts/' . $filename;
+            $data['webp_image'] = $webpPath;
         }
 
         Post::create($data);
@@ -79,12 +87,17 @@ class PostController extends Controller
         $data['published'] = $request->has('published');
 
         if ($request->hasFile('image')) {
-            $file          = $request->image;
-            $name          = uniqid() . '.' . $file->getClientOriginalExtension();
-            $image         = $request->image->storeAs('posts', $name);
-            $data['image'] = '/uploads/' . $image;
+            $file = $request->file('image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-            Storage::disk('public')->delete($post->image);
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put('uploads/posts/'.$filename, file_get_contents($file));
+
+            $webpPath = $this->convertToWebp($file, 'uploads/posts', $filename , 300 , 300);
+
+            // Update the product with the image paths
+            $data['image'] = '/uploads/posts/' . $filename;
+            $data['webp_image'] = $webpPath;
         } else {
             $data['image'] = $post->image;
         }
@@ -126,5 +139,22 @@ class PostController extends Controller
             ->get();
 
         return view('back.posts.categories', compact('categories'));
+    }
+
+    private function convertToWebp($file, $directory, $filename , $width , $height)
+    {
+
+        $image = Image::make($file);
+        $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+        $webpPath = $directory . '/' . $webpFilename;
+        $image->fit($width, $height, function ($constraint) {
+            // Additional parameters to force exact dimensions
+            $constraint->upsize(); // Prevent upsizing of the image
+            $constraint->aspectRatio(); // Ignore aspect ratio
+        });
+
+        $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));
+
+        return $webpPath;
     }
 }

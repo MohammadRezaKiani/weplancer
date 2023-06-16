@@ -63,9 +63,16 @@
                             </header>
 
                             @if($post->image)
-                                <div class="post-thumbnail dt-sl">
-                                    <img class="w-100" data-src="{{ $post->image }}" alt="{{ $post->title }}">
-                                </div>
+                                @if(option('show_image_optimize'))
+                                    <div class="post-thumbnail dt-sl">
+                                        <img class="w-100" data-src="{{ $post->webp_image}}" alt="{{ $post->title }}">
+                                    </div>
+                                @else
+                                    <div class="post-thumbnail dt-sl">
+                                        <img class="w-100" data-src="{{ $post->image }}" alt="{{ $post->title }}">
+                                    </div>
+                                @endif
+
                             @endif
 
                             <div class="col-12 mt-4">

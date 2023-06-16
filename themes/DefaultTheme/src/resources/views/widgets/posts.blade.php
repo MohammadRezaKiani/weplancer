@@ -25,7 +25,11 @@
                                     <div class="post-card mb-0">
                                         <div class="post-thumbnail">
                                             <a href="{{ route('front.posts.show', ['post' => $post]) }}">
-                                                <img src="{{ theme_asset('images/blog-empty-image.jpg') }}" data-src="{{ $post->image ? asset($post->image) : theme_asset('images/blog-empty-image.jpg') }}" alt="{{ $post->title }}">
+                                                @if(option('show_image_optimize'))
+                                                    <img src="{{ theme_asset('images/blog-empty-image.jpg') }}" data-src="{{ $post->webp_image ? asset($post->webp_image) : theme_asset('images/blog-empty-image.jpg') }}" alt="{{ $post->title }}">
+                                                @else
+                                                    <img src="{{ theme_asset('images/blog-empty-image.jpg') }}" data-src="{{ $post->image ? asset($post->image) : theme_asset('images/blog-empty-image.jpg') }}" alt="{{ $post->title }}">
+                                                @endif
                                             </a>
                                             <span class="post-tag">{{ $post->category ? $post->category->title : trans('front::messages.user.uncategorized')  }}</span>
 

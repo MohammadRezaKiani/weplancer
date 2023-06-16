@@ -29,9 +29,9 @@
         </div>
         <a class="product-thumb" href="{{ route('front.products.show', ['product' => $product]) }}">
             @if(option('show_image_optimize'))
-                <img data-src="{{ $product->webp_image ? asset($product->webp_image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
+                <img data-src="{{ $product->webp_image ? $product->webp_image : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
             @else
-                <img data-src="{{ $product->image ? asset($product->image) : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
+                <img data-src="{{ $product->image ? $product->image : asset('/no-image-product.png') }}" src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
             @endif
         </a>
 {{--        @dd($product)--}}
