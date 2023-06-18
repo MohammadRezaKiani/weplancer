@@ -52,12 +52,12 @@ class PostController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Save the image file to the 'plocal' disk
-            Storage::disk('plocal')->put('uploads/posts/'.$filename, file_get_contents($file));
+            Storage::disk('plocal')->put('uploads/products/'.$filename, file_get_contents($file));
 
-            $webpPath = $this->convertToWebp($file, 'uploads/posts', $filename , 300 , 300);
+            $webpPath = $this->convertToWebp($file, 'uploads/products', $filename , 300 , 300);
 
             // Update the product with the image paths
-            $data['image'] = '/uploads/posts/' . $filename;
+            $data['image'] = '/uploads/products/' . $filename;
             $data['webp_image'] = $webpPath;
         }
 
@@ -91,12 +91,12 @@ class PostController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Save the image file to the 'plocal' disk
-            Storage::disk('plocal')->put('uploads/posts/'.$filename, file_get_contents($file));
+            Storage::disk('plocal')->put('uploads/products/'.$filename, file_get_contents($file));
 
-            $webpPath = $this->convertToWebp($file, 'uploads/posts', $filename , 300 , 300);
+            $webpPath = $this->convertToWebp($file, 'uploads/products', $filename , 300 , 300);
 
             // Update the product with the image paths
-            $data['image'] = '/uploads/posts/' . $filename;
+            $data['image'] = '/uploads/products/' . $filename;
             $data['webp_image'] = $webpPath;
         } else {
             $data['image'] = $post->image;

@@ -162,7 +162,7 @@
                                         <div class="row">
                                             <div class="col-md-12 px-0">
                                                 <div class="table-responsive checkout-content dt-sl">
-                                                    @if($cart->nextBuyList->count())
+                                                    @if(!is_null($cart) && !is_null($cart->nextBuyList))
                                                         <div class="checkout-header checkout-header--express">
                                                         <span
                                                             class="checkout-header-title">({{ $cart->nextBuyList->count() }} {{ trans('front::messages.cart.kala') }})</span>
@@ -309,7 +309,7 @@
                 <div class="row mt-4">
                     <div class="col-12">
                             <div class="table-responsive checkout-content dt-sl">
-                                @if($cart->nextBuyList->count())
+                                @if(!is_null($cart) && !is_null($cart->nextBuyList))
                                     <div class="checkout-header checkout-header--express">
                                                         <span
                                                             class="checkout-header-title">لیست خرید بعدی شما</span>

@@ -65,11 +65,11 @@
                             @if($post->image)
                                 @if(option('show_image_optimize'))
                                     <div class="post-thumbnail dt-sl">
-                                        <img class="w-100" data-src="{{ $post->webp_image}}" alt="{{ $post->title }}">
+                                        <img class="w-100" data-src="{{ asset($post->webp_image)}}" alt="{{ $post->title }}">
                                     </div>
                                 @else
                                     <div class="post-thumbnail dt-sl">
-                                        <img class="w-100" data-src="{{ $post->image }}" alt="{{ $post->title }}">
+                                        <img class="w-100" data-src="{{ asset($post->image) }}" alt="{{ $post->title }}">
                                     </div>
                                 @endif
 

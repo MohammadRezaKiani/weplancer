@@ -6,6 +6,7 @@ use App\Models\Banner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class BannerController extends Controller
 {
@@ -36,15 +37,23 @@ class BannerController extends Controller
         ]);
 
         $file = $request->image;
-        $name = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-        $request->image->storeAs('banners', $name);
+        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+        Storage::disk('plocal')->put('uploads/banners/'.$filename, file_get_contents($file));
+
+        if ($request->group == 'index_middle_banners'){
+            $webpPath = $this->convertToWebp($file, 'uploads/banners', $filename , 837 , 400);
+        }
+        if ($request->group == 'index_slider_banners'){
+            $webpPath = $this->convertToWebp($file, 'uploads/banners', $filename , 250 , 250);
+        }
 
         Banner::create([
             'link'        => $request->link,
             'lang'        => app()->getLocale(),
             'group'       => $request->group,
             'published'   => $request->published ? true : false,
-            'image'       => '/uploads/banners/' . $name,
+            'image'       => '/uploads/banners/' . $filename,
+            'webp_image'       => $webpPath,
             'title'       => $request->title,
             'description' => $request->description,
         ]);
@@ -69,14 +78,22 @@ class BannerController extends Controller
         if ($request->hasFile('image')) {
 
             if ($banner->image) {
-                Storage::disk('public')->delete($banner->image);
+                Storage::disk('plocal')->delete($banner->image);
             }
 
             $file = $request->image;
-            $name = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $request->image->storeAs('banners', $name);
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('plocal')->put('uploads/banners/'.$filename, file_get_contents($file));
 
-            $banner->image = '/uploads/banners/' . $name;
+            if ($request->group == 'index_middle_banners'){
+                $webpPath = $this->convertToWebp($file, 'uploads/banners', $filename , 837 , 400);
+            }
+            if ($request->group == 'index_slider_banners'){
+                $webpPath = $this->convertToWebp($file, 'uploads/banners', $filename , 856 , 428);
+            }
+
+            $banner->image = '/uploads/banners/' . $filename;
+            $banner->webp_image = $webpPath;
             $banner->save();
         }
 
@@ -121,5 +138,21 @@ class BannerController extends Controller
         };
 
         return response('success');
+    }
+
+    private function convertToWebp($file, $directory, $filename , $width , $height)
+    {
+        $image = Image::make($file);
+        $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+        $webpPath = $directory . '/' . $webpFilename;
+        $image->resize($width, $height, function ($constraint) {
+            // Additional parameters to force exact dimensions
+//            $constraint->upsize(); // Prevent upsizing of the image
+//            $constraint->aspectRatio(); // Ignore aspect ratio
+        });
+
+        $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));
+
+        return $webpPath;
     }
 }

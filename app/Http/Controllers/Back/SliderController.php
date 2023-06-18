@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class SliderController extends Controller
 {
@@ -34,8 +35,22 @@ class SliderController extends Controller
         ]);
 
         $file = $request->image;
-        $name = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-        $request->image->storeAs('sliders', $name);
+        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+        // Save the image file to the 'plocal' disk
+        Storage::disk('plocal')->put('uploads/sliders/'.$filename, file_get_contents($file));
+
+        if ($request->group == 'main_sliders'){
+            $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 1780 , 890);
+        }
+        if ($request->group == 'mobile_sliders'){
+            $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 658 , 436);
+        }
+        if ($request->group == 'coworker_sliders'){
+            $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 150 , 150);
+        }
+        if ($request->group == 'sevices_sliders'){
+            $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 60 , 60);
+        }
 
         Slider::create([
             'title'       => $request->title,
@@ -43,7 +58,8 @@ class SliderController extends Controller
             'group'       => $request->group,
             'description' => $request->description,
             'published'   => $request->published ? true : false,
-            'image'       => '/uploads/sliders/' . $name,
+            'image'       => '/uploads/sliders/' . $filename,
+            'webp_image'       => $webpPath,
             'lang'        => app()->getLocale(),
         ]);
 
@@ -71,11 +87,25 @@ class SliderController extends Controller
             }
 
             $file = $request->image;
-            $name = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $request->image->storeAs('sliders', $name);
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            // Save the image file to the 'plocal' disk
+            Storage::disk('plocal')->put('uploads/sliders/'.$filename, file_get_contents($file));
 
-            $slider->image = '/uploads/sliders/' . $name;
-            $slider->save();
+            if ($request->group == 'main_sliders'){
+                $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 1780 , 890);
+            }
+            elseif ($request->group == 'mobile_sliders'){
+                $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 658 , 436);
+            }
+            elseif ($request->group == 'coworker_sliders'){
+                $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 150 , 150);
+            }
+            elseif ($request->group == 'sevices_sliders'){
+                $webpPath = $this->convertToWebp($file, 'uploads/sliders', $filename , 60 , 60);
+            }
+            else{
+                $webpPath = $slider->webp_image;
+            }
         }
 
         $slider->update([
@@ -84,6 +114,8 @@ class SliderController extends Controller
             'group'       => $request->group,
             'description' => $request->description,
             'published'   => $request->published ? true : false,
+            'image' => '/uploads/sliders/' . $filename,
+            'webp_image' => $webpPath
         ]);
 
         toastr()->success('اسلایدر با موفقیت ویرایش شد.');
@@ -119,5 +151,22 @@ class SliderController extends Controller
         };
 
         return response('success');
+    }
+
+
+    private function convertToWebp($file, $directory, $filename , $width , $height)
+    {
+        $image = Image::make($file);
+        $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+        $webpPath = $directory . '/' . $webpFilename;
+        $image->resize($width, $height, function ($constraint) {
+            // Additional parameters to force exact dimensions
+//            $constraint->upsize(); // Prevent upsizing of the image
+//            $constraint->aspectRatio(); // Ignore aspect ratio
+        });
+
+        $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));
+
+        return $webpPath;
     }
 }

@@ -647,10 +647,10 @@ class ProductController extends Controller
         $image = Image::make($file);
         $webpFilename = pathinfo($filename, PATHINFO_FILENAME) . '.webp';
         $webpPath = $directory . '/' . $webpFilename;
-        $image->fit($width, $height, function ($constraint) {
+        $image->resize($width, $height, function ($constraint) {
             // Additional parameters to force exact dimensions
-            $constraint->upsize(); // Prevent upsizing of the image
-            $constraint->aspectRatio(); // Ignore aspect ratio
+//            $constraint->upsize(); // Prevent upsizing of the image
+//            $constraint->aspectRatio(); // Ignore aspect ratio
         });
 
         $image->encode('webp', option('image_optimization_percentage'))->save(public_path($webpPath));

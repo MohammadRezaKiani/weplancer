@@ -16,7 +16,12 @@
                 @foreach ($cart->products as $product)
                     <a href="{{ route('front.products.show', ['product' => $product]) }}" class="dropdown-item">
                         <div class="dropdown-item-icon">
-                            <img src="{{ $product->image ? $product->image : '/empty.jpg' }}" alt="{{ $product->title }}">
+                            @if(option('show_image_optimize'))
+                                <img src="{{ $product->webp_image ? asset($product->webp_image) : asset('/no-image-product.png')}}" alt="{{ $product->title }}">
+                            @else
+                                <img src="{{ $product->image ? asset($product->image) : asset('/no-image-product.png') }}" alt="{{ $product->title }}">
+                            @endif
+
                         </div>
                         <div class="mr-3 cart-title">
                             {{ $product->title }}

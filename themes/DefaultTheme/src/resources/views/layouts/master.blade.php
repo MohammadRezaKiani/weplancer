@@ -158,7 +158,6 @@
         <script src="{{ theme_asset('js/ltr.js') }}"></script>
     @endif
 
-    @toastr_render
 
     {!! option('info_scripts') !!}
     <!-- endinject -->

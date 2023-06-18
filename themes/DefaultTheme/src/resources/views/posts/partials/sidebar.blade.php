@@ -11,9 +11,9 @@
                         <div class="item-inner">
                             <div class="item-thumb">
                                 @if(option('show_image_optimize'))
-                                    <a href="{{ route('front.posts.show', ['post' => $item]) }}" class="img-holder" style="background-image: url('{{ $item->webp_image ?: theme_asset('images/blog-empty-image.jpg') }}')"></a>
+                                    <a href="{{ route('front.posts.show', ['post' => $item]) }}" class="img-holder" style="background-image: url('{{ $item->webp_image ? asset($item->webp_image) : theme_asset('images/blog-empty-image.jpg') }}')"></a>
                                 @else
-                                    <a href="{{ route('front.posts.show', ['post' => $item]) }}" class="img-holder" style="background-image: url('{{ $item->image ?: theme_asset('images/blog-empty-image.jpg') }}')"></a>
+                                    <a href="{{ route('front.posts.show', ['post' => $item]) }}" class="img-holder" style="background-image: url('{{ $item->image ? asset($item->webp_image) : theme_asset('images/blog-empty-image.jpg') }}')"></a>
                                 @endif
                             </div>
                             <p class="title">

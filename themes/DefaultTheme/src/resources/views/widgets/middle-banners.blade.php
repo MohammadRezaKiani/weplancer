@@ -10,7 +10,11 @@
         <div class="col-sm-6 col-12 mb-2">
             <div class="widget-banner">
                 <a href="{{ $banner->link }}">
-                    <img data-src="{{ $banner->image }}" alt="{{ $banner->title }}">
+                    @if(option('show_image_optimize'))
+                        <img src="{{ $banner->webp_image }}" alt="{{ $banner->title }}">
+                    @else
+                        <img src="{{ asset($banner->image) }}" alt="{{ $banner->title }}">
+                    @endif
                 </a>
             </div>
         </div>

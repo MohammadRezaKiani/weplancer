@@ -18,7 +18,11 @@
                             <div class="col-12 mb-1">
                                 <div class="widget-banner">
                                     <a href="{{ $banner->link }}">
-                                        <img src="{{ asset($banner->image) }}" alt="{{ $banner->title }}">
+                                        @if(option('show_image_optimize'))
+                                            <img src="{{ asset($banner->webp_image) }}" alt="{{ $banner->title }}">
+                                        @else
+                                            <img src="{{ asset($banner->image) }}" alt="{{ $banner->title }}">
+                                        @endif
                                     </a>
                                 </div>
                             </div>
@@ -43,7 +47,13 @@
                     @foreach ($main_sliders as $slider)
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                             <a class="main-slider-slide" href="{{ $slider->link }}">
-                                <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="img-fluid">
+                                @if(option('show_image_optimize'))
+                                    <img src="{{ asset($slider->webp_image) }}" alt="{{ $slider->title }}" class="img-fluid">
+
+                                @else
+                                    <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="img-fluid">
+
+                                @endif
                             </a>
                         </div>
                     @endforeach
@@ -69,7 +79,11 @@
                     @foreach ($mobile_sliders as $slider)
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                             <a class="main-slider-slide" href="{{ $slider->link }}">
-                                <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="img-fluid">
+                                @if(option('show_image_optimize'))
+                                    <img src="{{ asset($slider->webp_image) }}" alt="{{ $slider->title }}" class="img-fluid">
+                                @else
+                                    <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="img-fluid">
+                                @endif
                             </a>
                         </div>
                     @endforeach
