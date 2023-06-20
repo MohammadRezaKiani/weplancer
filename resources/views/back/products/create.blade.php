@@ -214,6 +214,15 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>آیا نمایش قیمت فعال باشد؟</label>
+                                                                        <select name="is_show_price" class="form-control">
+                                                                            <option value="0">فعال</option>
+                                                                            <option value="0">غیر فعال</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="col-12">
                                                                     <hr>
                                                                 </div>

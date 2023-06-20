@@ -213,11 +213,19 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>آیا نمایش قیمت فعال باشد؟</label>
+                                                                        <select name="is_show_price" class="form-control">
+                                                                            <option value="0" {{ $product->prices[0]->is_show_price == 1 ? 'selected' : '' }}>فعال</option>
+                                                                            <option value="0" {{ $product->prices[0]->is_show_price == 0 ? 'selected' : '' }}>غیر فعال</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="col-12">
                                                                     <hr>
                                                                 </div>
                                                             </div>
-
                                                             <div id="product-prices-div" class="product-prices-div">
                                                                 @if ($product->isPhysical())
                                                                     @foreach ($product->prices as $price)

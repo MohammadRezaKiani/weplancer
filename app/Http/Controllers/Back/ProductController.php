@@ -133,6 +133,7 @@ class ProductController extends Controller
             'currency_id',
             'rounding_amount',
             'rounding_type',
+            'is_show_price'
         ]);
 
         $data['spec_type_id'] = spec_type($request);
@@ -214,7 +215,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->only([
-            'title',
+        'title',
             'title_en',
             'category_id',
             'size_type_id',
@@ -231,6 +232,7 @@ class ProductController extends Controller
             'currency_id',
             'rounding_amount',
             'rounding_type',
+            'is_show_price'
         ]);
 
         $data['spec_type_id'] = spec_type($request);
@@ -418,6 +420,7 @@ class ProductController extends Controller
                     "cart_min" => $price["cart_min"],
                     "discount_expire_at" => $price["discount_expire_at"] ? Jalalian::fromFormat('Y-m-d H:i:s', $price["discount_expire_at"])->toCarbon() : null,
                     "deleted_at" => null,
+                    'is_show_price' => $request->is_show_price
                 ]);
 
                 $update_price->get_attributes()->sync($attributes);

@@ -8,18 +8,18 @@
         @endif
 
         @if($product->category)
-                <span class="font-weight-bold">دسته بندی: </span>
-                <a href=""
-                   class="link--with-border-bottom">{{ $product->category->title }}</a>
+            <span class="font-weight-bold">دسته بندی: </span>
+            <a href=""
+               class="link--with-border-bottom">{{ $product->category->title }}</a>
         @endif
-            @if($product->brand && !is_null($product->brand->categories()->first()))
-                <br>
-                <div class="brand-category mt-3">
-                    <span class="font-weight-bold mt-3">دسته بندی برند: </span>
-                    <a href="{{route('front.brands.category.show' , ['slug' => $product->brand->categories()->first()->slug])}}"
-                       class="link--with-border-bottom">{{ $product->brand->categories()->first()->name }}</a>
-                </div>
-            @endif
+        @if($product->brand && !is_null($product->brand->categories()->first()))
+            <br>
+            <div class="brand-category mt-3">
+                <span class="font-weight-bold mt-3">دسته بندی برند: </span>
+                <a href="{{route('front.brands.category.show' , ['slug' => $product->brand->categories()->first()->slug])}}"
+                   class="link--with-border-bottom">{{ $product->brand->categories()->first()->name }}</a>
+            </div>
+        @endif
     </div>
 
     <div class="product-info dt-sl">
@@ -211,81 +211,93 @@
                         @endif
 
                         <div class="dt-sl box-Price-number box-margin">
-                            @if ($product->addableToCart())
-                                <div class="mb-2 d-flex ">
-                                    <span class="flex-grow-1 number">{{ $product->getUnit() }}</span>
-                                    <div class="flex-grow-1 text-centertext-price d-flex align-items-center">
-                                        <div class="number-input">
-                                            <button type="button"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()"></button>
-                                            <input id="cart-quantity" class="quantity"
-                                                   min="{{ cart_min($selected_price) }}"
-                                                   max="{{ cart_max($selected_price) }}"
-                                                   value="{{ cart_min($selected_price) }}" type="number" required>
-                                            <button type="button"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
-                                                    class="plus"></button>
+                            @if(!$product->prices[0]->is_show_price)
+                                <div class='call-to-support-area'>
+                                    <p class='font-weight-bold' style='font-size: 13px;'>برای اطلاع از قیمت با ما تماس بگیرید:</p>
+                                    <ul style='list-style: none;font-size: 20px;'>
+                                        <li><a href="tel:{{option('info_tel')}}" class="text-decoration-none text-danger"> <i class="mdi mdi-phone"></i> {{option('info_tel')}} </a></li>
+                                    </ul>
+                                    <hr>
+                                    <a href='' class='btn btn-danger w-100'><i class="mdi mdi-phone"></i> تماس برای قیمت</a>
+                                </div>
+                            @endif
+                            @if($product->prices[0]->is_show_price)
+                                @if ($product->addableToCart())
+                                    <div class="mb-2 d-flex ">
+                                        <span class="flex-grow-1 number">{{ $product->getUnit() }}</span>
+                                        <div class="flex-grow-1 text-centertext-price d-flex align-items-center">
+                                            <div class="number-input">
+                                                <button type="button"
+                                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()"></button>
+                                                <input id="cart-quantity" class="quantity"
+                                                       min="{{ cart_min($selected_price) }}"
+                                                       max="{{ cart_max($selected_price) }}"
+                                                       value="{{ cart_min($selected_price) }}" type="number" required>
+                                                <button type="button"
+                                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                                                        class="plus"></button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="section-title text-sm-title no-after-title-wide mb-0 dt-sl">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="d-flex justify-content-between mt-4">
-                                                <div class="text-price d-flex align-items-center">
-                                                    {{ trans('front::messages.products.price') }}
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-12 d-flex justify-content-end">
-                                                        @if ($selected_price->hasDiscount())
-                                                            <del>
-                                                                {{ number_format($selected_price->regularPrice()) }}
-                                                            </del>
-                                                            <div class="discount show-discount mr-3 ">
-                                                                <span>{{ $selected_price->discount() }}%</span>
-                                                            </div>
-                                                        @endif
+                                    <div class="section-title text-sm-title no-after-title-wide mb-0 dt-sl">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="d-flex justify-content-between mt-4">
+                                                    <div class="text-price d-flex align-items-center">
+                                                        {{ trans('front::messages.products.price') }}
                                                     </div>
-                                                    <div class="col-12 text-left">
+                                                    <div class="row">
+                                                        <div class="col-12 d-flex justify-content-end">
+                                                            @if ($selected_price->hasDiscount())
+                                                                <del>
+                                                                    {{ number_format($selected_price->regularPrice()) }}
+                                                                </del>
+                                                                <div class="discount show-discount mr-3 ">
+                                                                    <span>{{ $selected_price->discount() }}%</span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-12 text-left">
                                                     <span class="price text-danger">
                                                         {{ trans('front::messages.currency.prefix') }}
                                                         {{ number_format($selected_price->salePrice()) }}
                                                     </span>
-                                                        <span class="currency">
+                                                            <span class="currency">
                                                         {{ trans('front::messages.currency.suffix') }}
                                                     </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
 
-                                </div>
-
-                                <button data-price_id="{{ $selected_price->id }}"
-                                        data-action="{{ route('front.cart.store', ['product' => $product]) }}"
-                                        data-product="{{ $product->slug }}" type="button"
-                                        class=" mt-4 w-100 btn-primary-cm btn-with-icon add-to-cart btn-show-product">
-                                    {{ trans('front::messages.products.add-to-cart') }}
-                                </button>
-                            @elseif (!$product->addableToCart())
-                                <div class="infoSection">
-                                    <div class="box-product-unavailable">
-                                        <div class="unavailable d-flex justify-content-center">
-                                            <h5 class="">{{ trans('front::messages.products.unavailable') }}</h5>
+                                    <button data-price_id="{{ $selected_price->id }}"
+                                            data-action="{{ route('front.cart.store', ['product' => $product]) }}"
+                                            data-product="{{ $product->slug }}" type="button"
+                                            class=" mt-4 w-100 btn-primary-cm btn-with-icon add-to-cart btn-show-product">
+                                        {{ trans('front::messages.products.add-to-cart') }}
+                                    </button>
+                                @elseif (!$product->addableToCart())
+                                    <div class="infoSection">
+                                        <div class="box-product-unavailable">
+                                            <div class="unavailable d-flex justify-content-center">
+                                                <h5 class="">{{ trans('front::messages.products.unavailable') }}</h5>
+                                            </div>
+                                            <p class="text-justify">{{ trans('front::messages.products.text-unavailable') }}</p>
                                         </div>
-                                        <p class="text-justify">{{ trans('front::messages.products.text-unavailable') }}</p>
+                                        <div class="text-center">
+                                            <button id="stock_notify_btn"
+                                                    data-user="{{ auth()->check() ? auth()->user()->id : '' }}"
+                                                    data-product="{{ $product->id }}" type="button"
+                                                    class="btn-primary-cm bg-secondary btn-with-icon cart-not-available ">
+                                                <i class="mdi mdi-information"></i>
+                                                {{ trans('front::messages.products.let-me-know') }}
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="text-center">
-                                        <button id="stock_notify_btn"
-                                                data-user="{{ auth()->check() ? auth()->user()->id : '' }}"
-                                                data-product="{{ $product->id }}" type="button"
-                                                class="btn-primary-cm bg-secondary btn-with-icon cart-not-available ">
-                                            <i class="mdi mdi-information"></i>
-                                            {{ trans('front::messages.products.let-me-know') }}
-                                        </button>
-                                    </div>
-                                </div>
+                                @endif
                             @endif
                         </div>
 
