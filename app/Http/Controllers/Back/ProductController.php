@@ -142,7 +142,9 @@ class ProductController extends Controller
         $data['publish_date'] = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
         $data['special_end_date'] = $request->special_end_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->special_end_date)->toCarbon() : null;
         $data['lang'] = app()->getLocale();
-
+        $randomNumber = mt_rand(100000, 999999); // Generate a random 6-digit number
+        $sku = 'PRD-' . $randomNumber;
+        $data['sku'] = $sku;
         $product = Product::create($data);
 
         // update product brand
@@ -241,7 +243,14 @@ class ProductController extends Controller
         $data['publish_date'] = $request->publish_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->publish_date)->toCarbon() : null;
         $data['special_end_date'] = $request->special_end_date ? Jalalian::fromFormat('Y-m-d H:i:s', $request->special_end_date)->toCarbon() : null;
 
-        $product->update($data);
+        if (is_null($product->sku)){
+            $randomNumber = mt_rand(100000, 999999); // Generate a random 6-digit number
+            $sku = 'PRD-' . $randomNumber;
+            $data['sku'] = $sku;
+            $product->update($data);
+        }else{
+            $product->update($data);
+        }
 
         // update product brand
         $this->updateProductBrand($product, $request);

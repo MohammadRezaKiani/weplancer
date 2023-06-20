@@ -36,6 +36,8 @@
                             <div class="card overflow-hidden">
                                 <div class="card-header">
                                     <h4 class="card-title">اطلاعات محصول "{{ $product->title }}"</h4>
+
+                                    <h4> کد محصول: {{$product->sku}}</h4>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">

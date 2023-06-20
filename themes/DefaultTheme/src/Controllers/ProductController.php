@@ -76,6 +76,7 @@ class ProductController extends Controller
         $products = Product::detectLang()
             ->published()
             ->where('title', 'like', '%' . $request->q . '%')
+            ->orWhere('sku', 'like', '%' . $request->q . '%')
             ->orderByStock()
             ->latest()
             ->paginate(20);

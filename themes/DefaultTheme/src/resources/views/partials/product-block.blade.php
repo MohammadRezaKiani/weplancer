@@ -36,7 +36,6 @@
                      src="{{ theme_asset('images/600-600.png') }}" alt="{{ $product->title }}">
             @endif
         </a>
-        {{--        @dd($product)--}}
         <div class="product-card-body">
 
             @if($product->prices[0]->is_show_price)
