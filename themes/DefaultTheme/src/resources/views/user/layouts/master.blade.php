@@ -80,6 +80,13 @@
                                         </li>
 
                                         <li>
+                                            <a href="{{ route('front.address.list') }}" class="{{ active_class('front.address.list') }}">
+                                                <i class="mdi mdi-pin"></i>
+                                                آدرس
+                                            </a>
+                                        </li>
+
+                                        <li>
                                             <a href="{{ route('front.user.comments') }}" class="{{ active_class('front.user.comments') }}">
                                                 <i class="mdi mdi-glasses"></i>
                                                 {{ trans('front::messages.profile.your-views') }}

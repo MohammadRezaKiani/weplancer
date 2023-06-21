@@ -18,6 +18,7 @@ use Themes\DefaultTheme\src\Controllers\TicketController;
 use Themes\DefaultTheme\src\Controllers\VerifyController;
 use Themes\DefaultTheme\src\Controllers\DiscountController;
 use Themes\DefaultTheme\src\Controllers\WalletController;
+use Themes\DefaultTheme\src\Controllers\AddressController;
 
 // ------------------ Front Part Routes
 
@@ -93,6 +94,18 @@ Route::group(['as' => 'front.'], function () {
         // ------------------ orders
         Route::resource('orders', OrderController::class);
         Route::get('orders/pay/{order}', [OrderController::class, 'pay'])->name('orders.pay');
+
+        // ------------------ address
+        Route::prefix('address')->group(function () {
+            Route::get('/', [AddressController::class , 'list'])->name('address.list');
+
+            Route::get('/create', [AddressController::class , 'create'])->name('address.create');
+            Route::post('/store', [AddressController::class , 'store'])->name('address.store');
+
+            Route::get('/{id}/edit', [AddressController::class , 'edit'])->name('address.edit');
+            Route::post('/{id}/update', [AddressController::class , 'update'])->name('address.update');
+        });
+
 
         // ------------------ wallet
         Route::resource('wallet', WalletController::class)->only(['index', 'show', 'create', 'store']);

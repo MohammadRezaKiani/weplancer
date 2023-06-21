@@ -22,6 +22,13 @@
                         </div>
 
                         <div class="col-md-3">
+                            <label>کد محصول</label>
+                            <fieldset class="form-group">
+                                <input class="form-control datatable-filter" name="sku" value="{{ request('sku') }}">
+                            </fieldset>
+                        </div>
+
+                        <div class="col-md-3">
                             <label>وضعیت موجودی</label>
                             <fieldset class="form-group">
                                 <select class="form-control datatable-filter" name="stock">
