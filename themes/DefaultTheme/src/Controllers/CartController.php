@@ -14,8 +14,8 @@ class CartController extends Controller
 {
     public function show()
     {
-        $city_id = auth()->check() && auth()->user()->address  ? auth()->user()->address->city_id : null;
-        return view('front::cart', compact('city_id'));
+//        $city_id = auth()->check() && auth()->user()->address  ? auth()->user()->address->city_id : null;
+        return view('front::cart');
     }
 
     public function transferToNextBuy(Product $product, Request $request)
