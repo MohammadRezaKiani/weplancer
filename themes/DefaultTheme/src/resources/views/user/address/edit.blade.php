@@ -61,7 +61,7 @@
                                 <h3>{{ trans('front::messages.user.postal-code') }}</h3>
                             </div>
                             <div class="form-row form-group">
-                                <input type="text" class="input-ui pr-2" name="postal_code" value="{{ $user->address ? $user->address->postal_code : '' }}">
+                                <input type="text" class="input-ui pr-2" name="postal_code" value="{{ $address->postal_code }}">
                             </div>
                         </div>
                         <div class="col-lg-6 mt-4">
@@ -71,7 +71,7 @@
                                 </h4>
                             </div>
                             <div class="form-row form-group">
-                                <textarea name="address" class="input-ui pr-2 text-right" placeholder="{{ trans('front::messages.user.enter-recipient-address') }}">{{ $user->address ? $user->address->address : '' }}</textarea>
+                                <textarea name="address" class="input-ui pr-2 text-right" placeholder="{{ trans('front::messages.user.enter-recipient-address') }}">{{ $address->address }}</textarea>
                             </div>
                         </div>
                     </div>

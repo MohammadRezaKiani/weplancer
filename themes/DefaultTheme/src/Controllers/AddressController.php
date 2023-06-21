@@ -12,7 +12,7 @@ class AddressController extends Controller
     public function list(Request $request)
     {
         if (!is_null($request->user()->address)){
-            $address = $request->user()->address->latest()->paginate(20);
+            $address = $request->user()->address;
         }else{
             $address = null;
         }

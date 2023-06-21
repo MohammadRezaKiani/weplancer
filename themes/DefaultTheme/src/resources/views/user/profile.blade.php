@@ -44,39 +44,6 @@
                                     <span>{{ $user->email ?: '-' }}</span>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="label-info">
-                                    <span>{{ trans('front::messages.profile.state') }}</span>
-                                </div>
-                                <div class="value-info">
-                                    <span>{{ $user->address ? $user->address->province->name : '-' }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="label-info">
-                                    <span>{{ trans('front::messages.profile.city') }}</span>
-                                </div>
-                                <div class="value-info">
-                                    <span>{{ $user->address ? $user->address->city->name : '-' }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="label-info">
-                                    <span>{{ trans('front::messages.profile.postal-code') }}</span>
-                                </div>
-                                <div class="value-info">
-                                    <span>{{ $user->address ? $user->address->postal_code : '-' }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="label-info">
-                                    <span>{{ trans('front::messages.profile.complete-address') }}</span>
-                                </div>
-                                <div class="value-info address">
-                                    <span title="{{ $user->address ? $user->address->address : '-' }}">{{ $user->address ? ellips_text($user->address->address, 80) : '-' }}</span>
-                                </div>
-                            </div>
-
                         </div>
                         <div class="profile-section-link">
                             <a href="{{ route('front.user.profile.edit') }}" class="border-bottom-dt">

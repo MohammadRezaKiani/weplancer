@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    protected $guarded = ['id'];
+//    protected $guarded = ['id'];
+    protected $fillable = ['province_id', 'city_id', 'postal_code', 'address'];
 
     public function province()
     {

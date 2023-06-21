@@ -12,18 +12,11 @@
             </div>
             <div class="form-ui additional-info dt-sl dt-sn pt-4">
                 <form id="profile-form" action="{{ route('front.address.store') }}" class="setting_form" method="POST">
-
                     <div class="row">
                         @php
-                            if($user->address) {
-                                $province_id = $user->address->province_id;
-                                $cities = $user->address->province->cities;
-                                $city_id = $user->address->city_id;
-                            } else {
                                 $province_id = null;
                                 $cities = [];
                                 $city_id = null;
-                            }
                         @endphp
 
                         <div class="col-lg-6 mt-4">
@@ -61,7 +54,7 @@
                                 <h3>{{ trans('front::messages.user.postal-code') }}</h3>
                             </div>
                             <div class="form-row form-group">
-                                <input type="text" class="input-ui pr-2" name="postal_code" value="{{ $user->address ? $user->address->postal_code : '' }}">
+                                <input type="text" class="input-ui pr-2" name="postal_code">
                             </div>
                         </div>
                         <div class="col-lg-6 mt-4">
@@ -71,14 +64,15 @@
                                 </h4>
                             </div>
                             <div class="form-row form-group">
-                                <textarea name="address" class="input-ui pr-2 text-right" placeholder="{{ trans('front::messages.user.enter-recipient-address') }}">{{ $user->address ? $user->address->address : '' }}</textarea>
+                                <textarea name="address" class="input-ui pr-2 text-right" placeholder="{{ trans('front::messages.user.enter-recipient-address') }}"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row mt-3 justify-content-center">
                         <button id="submit-btn" type="submit" class="btn-primary-cm btn-with-icon ml-2">
-                            ساخت آدرس جدید
+                            <i class="mdi mdi-account-circle-outline"></i>
+                            {{ trans('front::messages.user.save-changes') }}
                         </button>
                     </div>
                 </form>

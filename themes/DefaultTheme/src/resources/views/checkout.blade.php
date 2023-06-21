@@ -130,73 +130,7 @@
                                         </div>
                                     </div>
 
-                                    @if ($cart->hasPhysicalProduct())
-
-                                        <div class="col-md-6 col-sm-12 mb-2">
-                                            <div class="form-row-title">
-                                                <h4>
-                                                    {{ trans('front::messages.cart.state') }} <sup
-                                                        class="text-danger">*</sup>
-                                                </h4>
-                                            </div>
-                                            <div class="form-row form-group">
-                                                <div class="custom-select-ui">
-                                                    <select class="right" name="province_id" id="province">
-                                                        <option
-                                                            value="">{{ trans('front::messages.cart.select') }}</option>
-
-                                                        @foreach ($provinces as $province)
-                                                            <option value="{{ $province->id }}"
-                                                                    @if(auth()->user()->address && auth()->user()->address->province->id == $province->id) selected @endif>
-                                                                {{ $province->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 mb-2">
-                                            <div class="form-row-title">
-                                                <h4>
-                                                    {{ trans('front::messages.cart.city') }} <sup
-                                                        class="text-danger">*</sup>
-                                                </h4>
-                                            </div>
-                                            <div class="form-row form-group">
-                                                <div class="custom-select-ui ">
-                                                    <select class="right" name="city_id" id="city">
-                                                        <option
-                                                            value="">{{ trans('front::messages.cart.select') }}</option>
-
-                                                        @if(auth()->user()->address)
-
-                                                            @foreach (auth()->user()->address->province->cities()->active()->orderBy('ordering')->get() as $city)
-                                                                <option value="{{ $city->id }}"
-                                                                        @if($city->id == auth()->user()->address->city->id) selected @endif>{{ $city->name }}</option>
-                                                            @endforeach
-
-                                                        @endif
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <div class="form-row-title">
-                                                <h4>
-                                                    {{ trans('front::messages.cart.postal-address') }}<sup
-                                                        class="text-danger">*</sup>
-                                                </h4>
-                                            </div>
-                                            <div class="form-row form-group">
-                                                    <textarea
-                                                        class="input-ui pr-2 text-right"
-                                                        name="address"
-                                                        placeholder="{{ trans('front::messages.cart.enter-recipient-address') }}">{{ user_address('address') }}</textarea>
-                                            </div>
-                                        </div>
-
-                                    @endif
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-12 mt-2 mb-2">
                                         <div class="form-row-title">
                                             <h4>
                                                 {{ trans('front::messages.cart.order-description') }}
@@ -209,23 +143,6 @@
                                         </div>
                                     </div>
 
-                                    @if ($cart->hasPhysicalProduct())
-                                        <div class="col-md-6 mb-2">
-                                            <div class="form-row-title">
-                                                <h4>
-                                                    {{ trans('front::messages.cart.postal-code') }}<sup
-                                                        class="text-danger">*</sup>
-                                                </h4>
-                                            </div>
-                                            <div class="form-row form-group">
-                                                <input
-                                                    class="input-ui pl-2 dir-ltr text-left placeholder-right"
-                                                    type="text" pattern="\d*"
-                                                    name="postal_code" value="{{ user_address('postal_code') }}"
-                                                    placeholder="{{ trans('front::messages.cart.code-dashes') }}">
-                                            </div>
-                                        </div>
-                                    @endif
 
                                     @if (option('site_rules_page_link'))
                                         <div class="col-md-12 mb-2">
@@ -248,6 +165,33 @@
                                     @endif
 
                                 </div>
+                            </div>
+
+                            <div
+                                class="section-title no-reletive text-sm-title title-wide no-after-title-wide mb-0 px-res-1 mt-4">
+                                <h2 class="mt-2">انتخاب آدرس</h2>
+                            </div>
+
+                            <div class="form-ui dt-sl pt-4 pb-4 checkout-div">
+
+                                @if(is_null($address))
+                                    <div class='alert alert-danger'>
+                                        <span>هنوز آدرس مورد نظر خود را مشخص نکرده اید</span>
+                                    </div>
+                                @else
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <select id="level" class="form-control valid" name="level"
+                                                    aria-invalid="false">
+                                                @foreach($address as $addr)
+                                                    <option value="{{$addr->id}}">{{$addr->address}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+
+
                             </div>
 
                             @if ($cart->hasPhysicalProduct())

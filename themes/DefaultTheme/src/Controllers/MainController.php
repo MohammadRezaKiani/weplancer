@@ -37,12 +37,15 @@ class MainController extends Controller
         $wallet          = auth()->user()->getWallet();
         $carriers        = Carrier::detectLang()->active()->latest()->get();
 
+        $address = auth()->user()->address;
+
         return view('front::checkout', compact(
             'provinces',
             'discount_status',
             'gateways',
             'wallet',
-            'carriers'
+            'carriers',
+            'address'
         ));
     }
 
